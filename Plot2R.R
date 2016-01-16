@@ -1,0 +1,12 @@
+temp <- tempfile()
+fileUrl <- "https://d396qusza40orc.cloudfront.net/exdata%2Fdata%2Fhousehold_power_consumption.zip"
+download.file(fileUrl, temp)
+dataDownloaded <- date()
+EPC <- read.table(unz(temp,"household_power_consumption.txt"),sep = ";", header = TRUE)
+unlink(temp)
+EPC$Date <- as.Date(EPC$Date,format = "%d/%m/%Y")
+EPC1 <- subset(EPC, subset = (Date >= "2007-02-01" & Date <= "2007-02-02"))
+EPC1$Global_active_power <- as.numeric(as.character(EPC1$Global_active_power))
+EPC1$DateTime <- paste(EPC1$Date, EPC1$Time)
+EPC1$DateTime <- as.POSIXct(EPC1$DateTime)
+plot(EPC1$DateTime,EPC1$Global_active_power, type = "l", ylab = "Global Active Power (Kilowatts)", xlab = "")
