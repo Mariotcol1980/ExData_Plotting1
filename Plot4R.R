@@ -1,0 +1,17 @@
+temp <- tempfile()
+fileUrl <- "https://d396qusza40orc.cloudfront.net/exdata%2Fdata%2Fhousehold_power_consumption.zip"
+download.file(fileUrl, temp)
+dataDownloaded <- date()
+EPC <- read.table(unz(temp,"household_power_consumption.txt"),sep = ";", header = TRUE)
+unlink(temp)
+EPC$Date <- as.Date(EPC$Date,format = "%d/%m/%Y")
+EPC$Global_active_power <- as.numeric(as.character(EPC$Global_active_power))
+EPC1 = subset.data.frame(EPC, Date == "2007/02/01"| Date == "2007/02/02") #Subset dataframe on both days.
+par(mfrow = c(2,2))
+plot(EPC1$DateTime,EPC1$Global_active_power, type = "l", ylab = "Global Active Power", xlab = "")
+plot(EPC1$DateTime,as.numeric(as.character(EPC1$Voltage)), type = "l", ylab = "Voltage", xlab = "datetime")
+with (EPC1,{ plot(DateTime,as.numeric(as.character(Sub_metering_3)), type = "l", col = "blue", xlab = "", ylab = "Energy Sub meeting", ylim = c(0,40))
+lines(DateTime,as.numeric(as.character(Sub_metering_2)), type = "l", col = "red")
+lines(DateTime,as.numeric(as.character(Sub_metering_1)), type = "l")
+legend("topright", pch = 1, col = c("black","blue", "red"), legend = c("Sub_metering_1", "Sub_metering_2", "Sub_metering_3"))})
+plot(EPC1$DateTime,as.numeric(as.character(EPC1$Global_reactive_power)), type = "l", ylab = "Global_Reactive_Power", xlab = "datetime")
